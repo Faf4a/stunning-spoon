@@ -87,3 +87,42 @@ jobs:
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Clone aoijs-api repository
+        run: |
+          git clone https://github.com/faf4a/aoijs-api.git temp-api-repo
+          cd temp-api-repo
+
+      - name: Compare functions.json
+        run: |
+          cd temp-api-repo
+          if ! cmp -s ../scripts/functions.json src/pages/assets/data/functions.json; then
+            echo "Files are different. Proceeding with update."
+          else
+            echo "No differences found. Skipping PR creation."
+            exit 0
+          fi
+
+      - name: Update functions.json in aoijs-api
+        run: |
+          cp ../scripts/functions.json src/pages/assets/data/functions.json
+          git add src/pages/assets/data/functions.json
+          git commit -m "[workflow] Update functions.json"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create pull request to aoijs-api
+        run: |
+          git remote set-url origin https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/faf4a/aoijs-api.git
+          git push origin master:refs/heads/update-functions
+          gh pr create --title "[workflow] Update functions.json" --body "This PR updates the functions.json file." --repo faf4a/aoijs-api --head update-functions --base master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+
+      - name: Notify Discord of PR success
+        if: success()
+        run: |
+          curl -H "Content-Type: application/json" \
+          -d '{"content": "meow <@428188716641812481>, please confirm the api changes!"}' \
+          ${{ secrets.DISCORD_WORKFLOW }}
