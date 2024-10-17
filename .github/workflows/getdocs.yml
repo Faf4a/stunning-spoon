@@ -117,7 +117,7 @@ jobs:
         run: |
           git remote set-url origin https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/faf4a/aoijs-api.git
           git push origin master:refs/heads/update-functions
-          gh pr create --title "[workflow] Update functions.json" --body "This PR updates the functions.json file." --repo faf4a/aoijs-api --head update-functions --base master
+          gh pr create --title "[workflow] Update functions.json" --body "hello, i am a bot! please merge the api changes." --repo faf4a/aoijs-api --head update-functions --base master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
