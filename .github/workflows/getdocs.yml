@@ -20,7 +20,7 @@ jobs:
           git remote add website https://github.com/aoijs/website.git
           git config core.sparseCheckout true
           echo "src/content/docs/functions" >> .git/info/sparse-checkout
-          git pull website main
+          git pull --ff-only website main
             
       - name: List contents of the repository
         run: |
