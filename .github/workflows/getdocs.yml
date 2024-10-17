@@ -18,10 +18,14 @@ jobs:
       - name: Clone website repo to temp directory
         run: |
           git clone https://github.com/aoijs/website.git temp-website-repo
-          
+
+      - name: Create functions directory in current repo
+        run: |
+          mkdir -p ./scripts/docs/functions
+
       - name: Copy functions folder to current repo
         run: |
-          cp -r temp-website-repo/src/content/docs/functions ./scripts/docs/functions
+          cp -r temp-website-repo/src/content/docs/functions/* ./scripts/docs/functions/
 
       - name: Clean up cloned repository
         run: |
