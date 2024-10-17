@@ -19,15 +19,26 @@ jobs:
         run: |
           git clone https://github.com/aoijs/website.git temp-website-repo
 
-      - name: Create functions directory in current repo
+      - name: Create necessary directories in current repo
         run: |
+          echo "Creating directories"
           mkdir -p ./scripts/docs/functions
+          mkdir -p ./scripts/docs/canvas
+          mkdir -p ./scripts/docs/music
 
       - name: Copy functions folder to current repo
         run: |
+          echo "Copying 'aoi.canvas function docs' to current repo"
+          cp -r temp-website-repo/src/content/docs/extensions/%40aoijs/aoi.canvas/functions/* ./scripts/docs/canvas/
+          echo "Copied canvas functions"
+          echo "Copying 'aoi.music function docs' to current repo"
+          cp -r temp-website-repo/src/content/docs/extensions/%40aoijs/aoi.music/music/* ./scripts/docs/music/
+          echo "Copied music functions"
+          echo "Copying 'aoi.js function docs' to current repo"
           cp -r temp-website-repo/src/content/docs/functions/* ./scripts/docs/functions/
+          echo "Copied function docs (main)"
 
-      - name: Clean up cloned repository
+      - name: Cleanup
         run: |
           rm -rf temp-website-repo
           
