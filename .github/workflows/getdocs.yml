@@ -29,11 +29,14 @@ jobs:
         id: check_changes
         run: |
           cd temp-website-repo
-          if git diff --quiet origin/main -- src/content/docs/functions src/content/docs/extensions/%40aoijs/aoi.canvas/functions src/content/docs/extensions/%40aoijs/aoi.music/music; then
+          echo "[debug]: Directory contents:"
+          echo ls
+          echo "[debug]: Checking for changes..."
+          if git diff --quiet origin/main -- src/content/docs/functions src/content/docs/extensions/@aoijs/aoi.canvas/functions src/content/docs/extensions/@aoijs/aoi.music/music; then
             echo "no changes" > changes_detected
           else
             echo "changes" > changes_detected
-            echo git diff origin/main -- src/content/docs/functions src/content/docs/extensions/%40aoijs/aoi.canvas/functions src/content/docs/extensions/%40aoijs/aoi.music/music
+            echo git diff origin/main -- src/content/docs/functions src/content/docs/extensions/@aoijs/aoi.canvas/functions src/content/docs/extensions/@aoijs/aoi.music/music
         continue-on-error: true
 
       - name: Check for changes
