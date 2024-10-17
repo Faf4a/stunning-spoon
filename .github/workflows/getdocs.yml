@@ -9,13 +9,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-
-      - name: Git Config
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          git config --local user.name "github-actions"
-          git config --local user.email "github-actions@github.com"
    
       - name: Clone
         run: |
@@ -46,9 +39,14 @@ jobs:
           
       - name: Commit
         run: |
+          git config --local user.name "github-actions"
+          git config --local user.email "github-actions@github.com"
           git add .
           git commit -m "[workflow] Update documentation"
           git push origin main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   update-functions:
     runs-on: ubuntu-latest
 
