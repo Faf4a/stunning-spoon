@@ -10,6 +10,12 @@ jobs:
       - name: Checkout current repo
         uses: actions/checkout@v3
 
+      - name: Create folders
+        run: |
+          mkdir -p ./scripts/docs/functions
+          mkdir -p ./scripts/docs/canvas
+          mkdir -p ./scripts/docs/music
+
       - name: Clone Website
         run: |
           git clone https://github.com/aoijs/website.git temp-website-repo
@@ -18,7 +24,7 @@ jobs:
         run: |
           cd temp-website-repo
           git fetch origin
-          
+
       - name: Check for changes
         id: check_changes
         run: |
@@ -36,12 +42,6 @@ jobs:
             echo "No changes detected, skipping file updates."
             exit 0
           fi
-
-      - name: Create folders
-        run: |
-          mkdir -p ./scripts/docs/functions
-          mkdir -p ./scripts/docs/canvas
-          mkdir -p ./scripts/docs/music
 
       - name: Copy folders
         run: |
