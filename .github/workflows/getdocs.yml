@@ -15,20 +15,24 @@ jobs:
           git config --global user.name "GitHub Action"
           git config --global user.email "action@github.com"
         
-      - name: Download folder from another repo
+          - name: Download folder from another repo
+          run: |
+            git init
+            if ! git remote | grep -q origin; then
+              git remote add -f origin https://github.com/aoijs/website.git
+            fi
+            git config core.sparseCheckout true
+            echo "src/content/docs/functions" >> .git/info/sparse-checkout
+            git pull origin main
+            
+      - name: List contents of the repository
         run: |
-          git init
-          if ! git remote | grep -q origin; then
-            git remote add -f origin https://github.com/aoijs/website.git
-          fi
-          git config core.sparseCheckout true
-          echo "src/content/docs/functions" >> .git/info/sparse-checkout
-          git pull origin main
+          ls -R
           
       - name: Copy folder to current repo
         run: |
           cp -r src/content/docs/functions ./scripts/docs
-        
+          
       - name: Commit changes
         run: |
           git add .
