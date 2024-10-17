@@ -14,21 +14,18 @@ jobs:
         run: |
           git config --global user.name "GitHub Action"
           git config --global user.email "action@github.com"
-        
-      - name: Download folder from another repo
+
+      - name: Clone website repo to temp directory
         run: |
-          git remote add website https://github.com/aoijs/website.git
-          git config core.sparseCheckout true
-          echo "src/content/docs/functions" >> .git/info/sparse-checkout
-          git pull --ff-only website main
-            
-      - name: List contents of the repository
-        run: |
-          ls -R
+          git clone https://github.com/aoijs/website.git temp-website-repo
           
-      - name: Copy folder to current repo
+      - name: Copy functions folder to current repo
         run: |
-          cp -r src/content/docs/functions ./scripts/docs
+          cp -r temp-website-repo/src/content/docs/functions ./scripts/docs
+
+      - name: Clean up cloned repository
+        run: |
+          rm -rf temp-website-repo
           
       - name: Commit changes
         run: |
