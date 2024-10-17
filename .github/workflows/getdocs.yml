@@ -71,7 +71,7 @@ jobs:
         run: pnpm install
 
       - name: Run
-        run: cd scripts && node script.js
+        run: cd scripts && node extract.js
 
       - name: Commit and push changes
         run: |
