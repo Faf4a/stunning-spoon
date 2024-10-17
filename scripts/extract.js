@@ -177,12 +177,12 @@ function parseFiles(directoryPath) {
               );
             }
           }
-          const { result: html, duration: renderDuration } =
+          const { result: html, duration: render } =
             measureExecutionTime(md.render.bind(md), content);
-          const { result: object, duration: parseDuration } =
+          const { result: object, duration: parse } =
             measureExecutionTime(parseHTMLContent, html, path);
 
-          result.push({ ...object, renderDuration, parseDuration });
+          result.push({ ...object, render, parse });
         }
       });
     }
@@ -198,10 +198,10 @@ writeFileSync("functions.json", JSON.stringify(docsResult, null, 2));
 
 console.table(
   docsResult.map(
-    ({ function: functionName, renderDuration, parseDuration }) => ({
+    ({ function: functionName, render, parse }) => ({
       functionName: functionName,
-      renderDuration: `${renderDuration.toFixed(2)} ms`,
-      parseDuration: `${parseDuration.toFixed(2)} ms`,
+      render: `${render.toFixed(2)} ms`,
+      parse: `${parse.toFixed(2)} ms`,
       missing: missingExamples.includes(functionName) ? "✅" : "❌",
     })
   )
