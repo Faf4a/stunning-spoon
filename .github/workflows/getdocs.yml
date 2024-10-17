@@ -17,13 +17,10 @@ jobs:
         
       - name: Download folder from another repo
         run: |
-          git init
-          if ! git remote | grep -q origin; then
-            git remote add -f origin https://github.com/aoijs/website.git
-          fi
+          git remote add website https://github.com/aoijs/website.git
           git config core.sparseCheckout true
           echo "src/content/docs/functions" >> .git/info/sparse-checkout
-          git pull origin main
+          git pull website main
             
       - name: List contents of the repository
         run: |
