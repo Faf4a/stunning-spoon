@@ -77,7 +77,13 @@ jobs:
         run: |
           git config --local user.name "github-actions"
           git config --local user.email "github-actions@github.com"
-          echo "current directory:"
-          ls
+          cd scripts
+          git add functions.json
+          if ! git diff-index --quiet HEAD; then
+            git commit -m "[workflow] Update functions.json"
+            git push origin main
+          else
+            echo "No changes to commit"
+          fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
