@@ -24,10 +24,10 @@ jobs:
       - name: Copy functions folder to current repo
         run: |
           echo "Copying 'aoi.canvas function docs' to current repo"
-          cp -r temp-website-repo/src/content/docs/extensions/%40aoijs/aoi.canvas/functions/* ./scripts/docs/canvas/
+          cp -r temp-website-repo/src/content/docs/extensions/@aoijs/aoi.canvas/functions/* ./scripts/docs/canvas/
           echo "Copied canvas functions"
           echo "Copying 'aoi.music function docs' to current repo"
-          cp -r temp-website-repo/src/content/docs/extensions/%40aoijs/aoi.music/music/* ./scripts/docs/music/
+          cp -r temp-website-repo/src/content/docs/extensions/@aoijs/aoi.music/music/* ./scripts/docs/music/
           echo "Copied music functions"
           echo "Copying 'aoi.js function docs' to current repo"
           cp -r temp-website-repo/src/content/docs/functions/* ./scripts/docs/functions/
