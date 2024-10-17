@@ -10,12 +10,7 @@ jobs:
       - name: Checkout current repo
         uses: actions/checkout@v3
 
-      - name: Set up Git configuration
-        run: |
-          git config --global user.name "GitHub Action"
-          git config --global user.email "action@github.com"
-
-      - name: Clone website repo to temp directory
+      - name: Clone Website
         run: |
           git clone https://github.com/aoijs/website.git temp-website-repo
 
@@ -24,7 +19,7 @@ jobs:
           cd temp-website-repo
           git fetch origin
           
-      - name: Check for changes in functions, canvas, and music directories
+      - name: Check for changes
         id: check_changes
         run: |
           cd temp-website-repo
@@ -35,35 +30,35 @@ jobs:
             echo git diff origin/main -- src/content/docs/functions src/content/docs/extensions/%40aoijs/aoi.canvas/functions src/content/docs/extensions/%40aoijs/aoi.music/music
         continue-on-error: true
 
-      - name: Check if changes were detected
+      - name: Check for changes
         run: |
           if grep -q "no changes" temp-website-repo/changes_detected; then
             echo "No changes detected, skipping file updates."
             exit 0
           fi
 
-      - name: Create necessary directories in current repo
+      - name: Create folders
         run: |
           mkdir -p ./scripts/docs/functions
           mkdir -p ./scripts/docs/canvas
           mkdir -p ./scripts/docs/music
 
-      - name: Copy folders to current repo
+      - name: Copy folders
         run: |
           cp -r temp-website-repo/src/content/docs/extensions/%40aoijs/aoi.canvas/functions/* ./scripts/docs/canvas/
           cp -r temp-website-repo/src/content/docs/extensions/%40aoijs/aoi.music/music/* ./scripts/docs/music/
           cp -r temp-website-repo/src/content/docs/functions/* ./scripts/docs/functions/
 
-      - name: Clean up cloned repository
+      - name: Clean up
         run: |
           rm -rf temp-website-repo
 
-      - name: Commit changes
+      - name: Commit
         run: |
           git add .
           git commit -m "[workflow] Update documentation"
 
-      - name: Push changes
+      - name: Push
         run: |
           git add .
           git commit -m "[workflow] Update documentation"
