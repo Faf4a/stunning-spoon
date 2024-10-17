@@ -77,8 +77,7 @@ jobs:
         run: |
           git config --local user.name "github-actions"
           git config --local user.email "github-actions@github.com"
-          git add *
-          git commit -m "[workflow] Update functions" || echo "No changes to commit"
-          git push
+          echo "current directory:"
+          ls
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
