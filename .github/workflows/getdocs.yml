@@ -7,13 +7,8 @@ jobs:
   download-and-save:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout current repo
+      - name: Checkout repository
         uses: actions/checkout@v3
-
-      - name: Set up Git configuration
-        run: |
-          git config --global user.name "GitHub Action"
-          git config --global user.email "action@github.com"
 
       - name: Clone website repo to temp directory
         run: |
