@@ -42,8 +42,12 @@ jobs:
           git config --local user.name "github-actions"
           git config --local user.email "github-actions@github.com"
           git add .
-          git commit -m "[workflow] Update documentation"
-          git push origin main
+          if ! git diff-index --quiet HEAD; then
+            git commit -m "[workflow] Update documentation"
+            git push origin main
+          else
+            echo "No changes to commit"
+          fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
