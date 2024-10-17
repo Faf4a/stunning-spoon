@@ -21,7 +21,7 @@ jobs:
           
       - name: Copy functions folder to current repo
         run: |
-          cp -r temp-website-repo/src/content/docs/functions ./scripts/docs
+          cp -r temp-website-repo/src/content/docs/functions ./scripts/docs/functions
 
       - name: Clean up cloned repository
         run: |
@@ -30,5 +30,5 @@ jobs:
       - name: Commit changes
         run: |
           git add .
-          git commit -m "Download Documentation for aoi.js"
+          git commit -m "[workflow] Update documentation"
           git push origin main
