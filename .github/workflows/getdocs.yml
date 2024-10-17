@@ -7,37 +7,63 @@ jobs:
   download-and-save:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Checkout current repo
         uses: actions/checkout@v3
+
+      - name: Set up Git configuration
+        run: |
+          git config --global user.name "GitHub Action"
+          git config --global user.email "action@github.com"
 
       - name: Clone website repo to temp directory
         run: |
           git clone https://github.com/aoijs/website.git temp-website-repo
 
+      - name: Fetch remote changes
+        run: |
+          cd temp-website-repo
+          git fetch origin
+          
+      - name: Check for changes in functions, canvas, and music directories
+        id: check_changes
+        run: |
+          cd temp-website-repo
+          if git diff --quiet origin/main -- src/content/docs/functions src/content/docs/extensions/%40aoijs/aoi.canvas/functions src/content/docs/extensions/%40aoijs/aoi.music/music; then
+            echo "no changes" > changes_detected
+          else
+            echo "changes" > changes_detected
+            echo git diff origin/main -- src/content/docs/functions src/content/docs/extensions/%40aoijs/aoi.canvas/functions src/content/docs/extensions/%40aoijs/aoi.music/music
+        continue-on-error: true
+
+      - name: Check if changes were detected
+        run: |
+          if grep -q "no changes" temp-website-repo/changes_detected; then
+            echo "No changes detected, skipping file updates."
+            exit 0
+          fi
+
       - name: Create necessary directories in current repo
         run: |
-          echo "Creating directories"
           mkdir -p ./scripts/docs/functions
           mkdir -p ./scripts/docs/canvas
           mkdir -p ./scripts/docs/music
 
-      - name: Copy functions folder to current repo
+      - name: Copy folders to current repo
         run: |
-          echo "Copying 'aoi.canvas function docs' to current repo"
           cp -r temp-website-repo/src/content/docs/extensions/%40aoijs/aoi.canvas/functions/* ./scripts/docs/canvas/
-          echo "Copied canvas functions"
-          echo "Copying 'aoi.music function docs' to current repo"
           cp -r temp-website-repo/src/content/docs/extensions/%40aoijs/aoi.music/music/* ./scripts/docs/music/
-          echo "Copied music functions"
-          echo "Copying 'aoi.js function docs' to current repo"
           cp -r temp-website-repo/src/content/docs/functions/* ./scripts/docs/functions/
-          echo "Copied function docs (main)"
 
-      - name: Cleanup
+      - name: Clean up cloned repository
         run: |
           rm -rf temp-website-repo
-          
+
       - name: Commit changes
+        run: |
+          git add .
+          git commit -m "[workflow] Update documentation"
+
+      - name: Push changes
         run: |
           git add .
           git commit -m "[workflow] Update documentation"
