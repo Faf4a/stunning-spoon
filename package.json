@@ -1,0 +1,16 @@
+{
+  "name": "stunning-spoon",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "html-to-md": "^0.8.6",
+    "markdown-it": "^14.1.0"
+  }
+}

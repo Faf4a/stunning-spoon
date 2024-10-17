@@ -1,0 +1,34 @@
+name: Download Documentation
+
+on:
+  workflow_dispatch:
+
+jobs:
+  download-and-save:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout current repo
+        uses: actions/checkout@v3
+
+      - name: Set up Git configuration
+        run: |
+          git config --global user.name "GitHub Action"
+          git config --global user.email "action@github.com"
+        
+      - name: Download folder from another repo
+        run: |
+          git init
+          git remote add -f origin https://github.com/aoijs/website.git
+          git config core.sparseCheckout true
+          echo "src/content/docs/functions" >> .git/info/sparse-checkout
+          git pull origin main
+          
+      - name: Copy folder to current repo
+        run: |
+          cp -r src/content/docs/functions ./scripts/docs
+        
+      - name: Commit changes
+        run: |
+          git add .
+          git commit -m "Download Documentation for aoi.js"
+          git push origin main
