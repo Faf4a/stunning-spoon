@@ -98,7 +98,7 @@ jobs:
       - name: Compare functions.json
         run: |
           cd temp-api-repo
-          if ! cmp -s ../scripts/functions.json src/pages/assets/data/functions.json; then
+          if ! cmp -s scripts/functions.json src/pages/assets/data/functions.json; then
             echo "Files are different. Proceeding with update."
           else
             echo "No differences found. Skipping PR creation."
@@ -107,7 +107,7 @@ jobs:
 
       - name: Update functions.json in aoijs-api
         run: |
-          cp ../scripts/functions.json src/pages/assets/data/functions.json
+          cp scripts/functions.json src/pages/assets/data/functions.json
           git add src/pages/assets/data/functions.json
           git commit -m "[workflow] Update functions.json"
         env:
