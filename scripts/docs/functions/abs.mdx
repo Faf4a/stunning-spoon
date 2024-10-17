@@ -1,0 +1,57 @@
+---
+title: $abs
+description: $abs returns the absolute value of the number.
+id: abs
+---
+
+`$abs` returns the absolute value of the number.
+
+## Usage
+
+```aoi
+$abs[number]
+```
+
+## Parameters
+
+| Field  | Type                                                                                              | Description | Required |
+| ------ | ------------------------------------------------------------------------------------------------- | ----------- | :------: |
+| number | [number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number) | The number. |   true   |
+
+## Example(s)
+
+import Example from "../../../components/Page/Example.astro";
+import DiscordComponents from "../../../components/DiscordMessage/DiscordComponents.tsx";
+
+<Example>
+
+<div slot="default">
+This will return the absolute value of `-151.5`, which is `151.5`:
+
+```javascript
+client.command({
+    name: "abs",
+    code: `$abs[-151.5]`
+});
+```
+</div>
+<div slot="handler">
+
+This will return the absolute value of `-151.5`, which is `151.5`:
+
+```javascript
+module.exports = {
+  name: "abs",
+  code: `$abs[-151.5]`
+};
+```
+</div>
+<div slot="example">
+<DiscordComponents
+  client:load
+  client:only="react"
+  bot="151.5"
+  user="!abs"
+/>
+</div>
+</Example>

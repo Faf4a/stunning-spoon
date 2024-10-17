@@ -1,0 +1,26 @@
+---
+title: $guildCount
+description: $guildCount will return the amount of guilds of where your bot is in.
+id: guildCount
+---
+
+`$guildCount` will return the amount of guilds where your bot is in.
+
+## Usage
+
+```aoi
+$guildCount
+```
+
+## Example(s)
+
+This will return the amount of guilds your bot is in:
+
+```javascript
+client.command({
+    name: "guildCount",
+    code: `
+  I'm in $guildCount guilds!
+  `
+});
+```
