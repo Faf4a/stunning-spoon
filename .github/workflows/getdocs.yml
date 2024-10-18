@@ -45,7 +45,7 @@ jobs:
         run: |
           git config --local user.name "github-actions"
           git config --local user.email "github-actions@github.com"
-          git add .
+          git add 
           echo "Staged files: $(git diff --cached --name-only)"
           if ! git diff-index --quiet HEAD; then
               git commit -m "[workflow] Update documentation"
@@ -55,7 +55,6 @@ jobs:
               echo "No changes to commit"
               echo "::set-output name=changes_made::false"
           fi
-          shell: /usr/bin/bash -e {0}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
