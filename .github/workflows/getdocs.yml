@@ -98,10 +98,12 @@ jobs:
 
       - name: Update functions.json in aoijs-api
         run: |
-          cp scripts/functions.json temp-api-repo/src/pages/assets/data/functions.json
           git config --local user.name "github-actions"
           git config --local user.email "github-actions@github.com"
+          cp scripts/functions.json temp-api-repo/src/pages/assets/data/functions.json
           cd temp-api-repo
+          git config --local user.name "github-actions"
+          git config --local user.email "github-actions@github.com"
           git add src/pages/assets/data/functions.json
           git commit -m "[workflow] Update functions.json"
         env:
