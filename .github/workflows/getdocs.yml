@@ -63,7 +63,7 @@ jobs:
   update-functions:
     runs-on: ubuntu-latest
     needs: get-docs
-    if: env.changes_made == 'true'
+    if: needs.get-docs.outputs.changes_made == 'true'
 
     steps:
       - name: Checkout code
