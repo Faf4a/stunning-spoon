@@ -87,6 +87,14 @@ jobs:
         run: |
           git clone https://github.com/faf4a/aoijs-api.git temp-api-repo
 
+      - name: Fetch PR count
+        id: pr-count
+        run: |
+          pr_count=$(gh pr list --repo faf4a/aoijs-api --state all | wc -l)
+          echo "::set-output name=pr_count::$pr_count"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Compare functions.json
         run: |
           if ! diff -q scripts/functions.json temp-api-repo/src/pages/assets/data/functions.json; then
@@ -113,8 +121,8 @@ jobs:
         run: |
           cd temp-api-repo
           git remote set-url origin https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/faf4a/aoijs-api.git
-          git push origin master:refs/heads/update-functions
-          gh pr create --title "[workflow] Update functions.json" --body "hello, i am a bot! please merge the api changes." --repo faf4a/aoijs-api --head update-functions --base master
+          git push origin master:refs/heads/update-functions-${{ steps.pr-count.outputs.pr_count }}
+          gh pr create --title "[workflow] Update functions.json" --body "hello, i am a bot! please merge the api changes." --repo faf4a/aoijs-api --head update-functions-${{ steps.pr-count.outputs.pr_count }} --base master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
