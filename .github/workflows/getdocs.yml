@@ -75,28 +75,12 @@ jobs:
       - name: Run
         run: cd scripts && node extract.js
 
-      - name: Commit and push changes
-        run: |
-          git config --local user.name "github-actions"
-          git config --local user.email "github-actions@github.com"
-          cd scripts
-          git add functions.json
-          if ! git diff-index --quiet HEAD; then
-            git commit -m "[workflow] Update functions.json"
-            git push origin main
-          else
-            echo "No changes to commit"
-          fi
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Clone aoijs-api repository
         run: |
           git clone https://github.com/faf4a/aoijs-api.git temp-api-repo
 
       - name: Compare functions.json
         run: |
-          cd temp-api-repo
           if ! cmp -s scripts/functions.json temp-api-repo/src/pages/assets/data/functions.json; then
             echo "Files are different. Proceeding with update."
           else
@@ -107,13 +91,17 @@ jobs:
       - name: Update functions.json in aoijs-api
         run: |
           cp scripts/functions.json temp-api-repo/src/pages/assets/data/functions.json
-          git add temp-api-repo/*
+          cd temp-api-repo
+          git config --local user.name "github-actions"
+          git config --local user.email "github-actions@github.com"
+          git add src/pages/assets/data/functions.json
           git commit -m "[workflow] Update functions.json"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create pull request to aoijs-api
         run: |
+          cd temp-api-repo
           git remote set-url origin https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/faf4a/aoijs-api.git
           git push origin master:refs/heads/update-functions
           gh pr create --title "[workflow] Update functions.json" --body "hello, i am a bot! please merge the api changes." --repo faf4a/aoijs-api --head update-functions --base master
