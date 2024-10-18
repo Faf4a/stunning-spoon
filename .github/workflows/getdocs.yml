@@ -45,15 +45,14 @@ jobs:
         run: |
           git config --local user.name "github-actions"
           git config --local user.email "github-actions@github.com"
-          git add 
-          echo "Staged files: $(git diff --cached --name-only)"
+          git add .
           if ! git diff-index --quiet HEAD; then
-              git commit -m "[workflow] Update documentation"
-              git push origin main
-              echo "::set-output name=changes_made::true"
+            git commit -m "[workflow] Update documentation"
+            git push origin main
+            echo "::set-output name=changes_made::true"
           else
-              echo "No changes to commit"
-              echo "::set-output name=changes_made::false"
+            echo "No changes to commit"
+            echo "::set-output name=changes_made::false"
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
