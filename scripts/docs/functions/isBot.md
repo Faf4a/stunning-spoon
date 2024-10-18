@@ -1,0 +1,32 @@
+---
+title: $isBot
+description: $isBot will check if the given user is a bot.
+id: isBot
+---
+
+`$isBot` will check if the given user is a bot.
+
+## Usage
+
+```aoi
+$isBot[userID?]
+```
+
+## Parameters
+
+| Field   | Type                                                                                              | Description                        | Required |
+| ------- | ------------------------------------------------------------------------------------------------- | ---------------------------------- | :------: |
+| userID? | [number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number) | User id to check if they're a bot. |  false   |
+
+## Example(s)
+
+This will return `true` as your bot is, obviously, a bot:
+
+```javascript
+client.command({
+    name: "isBot",
+    code: `
+  $isBot[$clientID]
+  `
+});
+```
