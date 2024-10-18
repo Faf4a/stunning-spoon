@@ -81,7 +81,7 @@ jobs:
 
       - name: Compare functions.json
         run: |
-          if ! cmp -s scripts/functions.json temp-api-repo/src/pages/assets/data/functions.json; then
+          if ! diff -q scripts/functions.json temp-api-repo/src/pages/assets/data/functions.json; then
             echo "Files are different. Proceeding with update."
           else
             echo "No differences found. Skipping PR creation."
