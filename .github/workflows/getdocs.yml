@@ -91,7 +91,11 @@ jobs:
       - name: Update functions.json in aoijs-api
         run: |
           cp scripts/functions.json temp-api-repo/src/pages/assets/data/functions.json
+          echo "normal"
+          ls
           cd temp-api-repo
+          echo "changed"
+          ls
           git config --local user.name "github-actions"
           git config --local user.email "github-actions@github.com"
           git add src/pages/assets/data/functions.json
