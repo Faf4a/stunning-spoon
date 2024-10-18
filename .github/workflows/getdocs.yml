@@ -34,7 +34,7 @@ jobs:
           cp -r temp-website-repo/src/content/docs/extensions/@aoijs/aoi.music/music/* ./scripts/docs/music/
           echo "Copied music functions"
           echo "Copying 'aoi.js function docs' to current repo"
-          cp -r temp-website-repo/src/functions/* ./scripts/docs/functions/
+          cp -r temp-website-repo/src/content/docs/functions/* ./scripts/docs/functions/
           echo "Copied function docs (main)"
 
       - name: Cleanup
