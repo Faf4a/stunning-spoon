@@ -107,7 +107,7 @@ jobs:
       - name: Update functions.json in aoijs-api
         run: |
           cp scripts/functions.json temp-api-repo/src/pages/assets/data/functions.json
-          git add temp-api-repo/src/pages/assets/data/functions.json
+          git add temp-api-repo/*
           git commit -m "[workflow] Update functions.json"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
