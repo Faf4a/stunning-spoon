@@ -8,12 +8,10 @@ on:
 jobs:
   get-docs:
     runs-on: ubuntu-latest
-    outputs:
-      changes_made: ${{ steps.commit.outputs.changes_made }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-   
+
       - name: Clone
         run: |
           git clone https://github.com/aoijs/website.git temp-website-repo
@@ -34,14 +32,15 @@ jobs:
           cp -r temp-website-repo/src/content/docs/extensions/@aoijs/aoi.music/music/* ./scripts/docs/music/
           echo "Copied music functions"
           echo "Copying 'aoi.js function docs' to current repo"
-          cp -r temp-website-repo/src/content/docs/functions/* ./scripts/docs/functions/
+          cp -r temp-website-repo/src/functions/* ./scripts/docs/functions/
           echo "Copied function docs (main)"
 
       - name: Cleanup
         run: |
           rm -rf temp-website-repo
-          
+
       - name: Commit
+        id: commit
         run: |
           git config --local user.name "github-actions"
           git config --local user.email "github-actions@github.com"
@@ -51,7 +50,7 @@ jobs:
             git commit -m "[workflow] Update documentation"
             git push origin main
             echo "changes_made=true" >> $GITHUB_ENV
-            echo 'Changes are made'
+            echo "Changes are made"
           else
             echo "No changes to commit"
             echo "changes_made=false" >> $GITHUB_ENV
@@ -62,7 +61,7 @@ jobs:
   update-functions:
     runs-on: ubuntu-latest
     needs: get-docs
-    if: env.changes_made == 'true'
+    if: ${{ env.changes_made == 'true' }}
 
     steps:
       - name: Checkout code
@@ -98,13 +97,9 @@ jobs:
       - name: Update functions.json in aoijs-api
         run: |
           cp scripts/functions.json temp-api-repo/src/pages/assets/data/functions.json
-          echo "normal"
-          ls
-          cd temp-api-repo
-          echo "changed"
-          ls
           git config --local user.name "github-actions"
           git config --local user.email "github-actions@github.com"
+          cd temp-api-repo
           git add src/pages/assets/data/functions.json
           git commit -m "[workflow] Update functions.json"
         env:
