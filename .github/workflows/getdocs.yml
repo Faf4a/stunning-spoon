@@ -122,5 +122,5 @@ jobs:
         if: success()
         run: |
           curl -H "Content-Type: application/json" \
-          -d '{"content": "meow <@428188716641812481>, please confirm the [api changes](https://github.com/faf4a/aoijs-api/pulls)!"}' \
+          -d '{"content": "updated api docs, awaiting PR approval"}' \
           ${{ secrets.DISCORD_WORKFLOW }}
