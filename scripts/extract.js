@@ -192,19 +192,15 @@ function parseFiles(directoryPath) {
 }
 
 const docs = join(__dirname, "docs");
-const { result: docsResult, duration: parseFilesDuration } =
-  measureExecutionTime(parseFiles, docs);
 writeFileSync("functions.json", JSON.stringify(docsResult, null, 2));
 
 console.table(
   docsResult.map(
-    ({ function: functionName, render, parse }) => ({
+    ({ function: functionName }) => ({
       functionName: functionName,
-      render: `${render.toFixed(2)} ms`,
-      parse: `${parse.toFixed(2)} ms`,
       missing: missingExamples.includes(functionName) ? "✅" : "❌",
     })
   )
 );
 
-console.log(`Total parsing time: ${parseFilesDuration.toFixed(2)} ms`);
+console.log(`Done!`);
