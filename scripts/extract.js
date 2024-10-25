@@ -192,6 +192,7 @@ function parseFiles(directoryPath) {
 }
 
 const docs = join(__dirname, "docs");
+const docsResult = parseFiles(docs);
 writeFileSync("functions.json", JSON.stringify(docsResult, null, 2));
 
 console.table(
