@@ -3,7 +3,7 @@ name: Update Documentation
 on:
   workflow_dispatch:
   schedule:
-    - cron: "*/30 * * * *"  
+    - cron: "*/45 * * * *"  
 
 jobs:
   get-docs:
@@ -112,6 +112,7 @@ jobs:
           cd temp-api-repo
           git config --local user.name "github-actions"
           git config --local user.email "github-actions@github.com"
+          git pull origin master
           git add src/pages/assets/data/functions.json
           git commit -m "[workflow] Update functions.json"
         env:
