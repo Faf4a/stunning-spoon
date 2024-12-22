@@ -122,8 +122,9 @@ jobs:
         run: |
           cd temp-api-repo
           git remote set-url origin https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/faf4a/aoijs-api.git
-          git pull --rebase origin master
+          git pull
           git push origin master:refs/heads/update-functions-${{ steps.pr-count.outputs.pr_count }}
+          git pull
           gh pr create --title "[workflow] Update functions.json" --body "hello, i am a bot! please merge the api changes." --repo faf4a/aoijs-api --head update-functions-${{ steps.pr-count.outputs.pr_count }} --base master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
