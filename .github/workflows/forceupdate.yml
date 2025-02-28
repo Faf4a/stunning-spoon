@@ -2,9 +2,7 @@ name: Force Update Documentation
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "*/45 * * * *"  
-
+  
 jobs:
   get-docs:
     runs-on: ubuntu-latest
