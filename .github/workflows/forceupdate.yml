@@ -1,0 +1,156 @@
+name: Force Update Documentation
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "*/45 * * * *"  
+
+jobs:
+  get-docs:
+    runs-on: ubuntu-latest
+    outputs:
+      changes_made: ${{ steps.commit.outputs.changes_made }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Clone
+        run: |
+          git clone https://github.com/aoijs/website.git temp-website-repo
+
+      - name: Create
+        run: |
+          echo "Creating directories"
+          mkdir -p ./scripts/docs/functions
+          mkdir -p ./scripts/docs/canvas
+          mkdir -p ./scripts/docs/music
+
+      - name: Copy
+        run: |
+          echo "Copying 'aoi.canvas function docs' to current repo"
+          cp -r temp-website-repo/src/content/docs/extensions/@aoijs/aoi.canvas/functions/* ./scripts/docs/canvas/
+          echo "Copied canvas functions"
+          echo "Copying 'aoi.music function docs' to current repo"
+          cp -r temp-website-repo/src/content/docs/extensions/@aoijs/aoi.music/music/* ./scripts/docs/music/
+          echo "Copied music functions"
+          echo "Copying 'aoi.js function docs' to current repo"
+          cp -r temp-website-repo/src/content/docs/functions/* ./scripts/docs/functions/
+          echo "Copied function docs (main)"
+
+      - name: Cleanup
+        run: |
+          rm -rf temp-website-repo
+
+      - name: Commit
+        id: commit
+        run: |
+          git config --local user.name "github-actions"
+          git config --local user.email "github-actions@github.com"
+          git pull
+          git add .
+          
+          if ! git diff-index --quiet HEAD; then
+            git commit -m "[workflow] Update documentation"
+            git push origin main
+            echo "changes_made=true" >> $GITHUB_OUTPUT
+            echo "true"
+          else
+            echo "changes_made=false" >> $GITHUB_OUTPUT
+            echo "false"
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  update-functions:
+    runs-on: ubuntu-latest
+    needs: get-docs
+    if: needs.get-docs.outputs.changes_made == 'true'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "18"
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Run
+        run: cd scripts && node extract.js
+
+      - name: Clone aoijs-api repository
+        run: |
+          git clone https://github.com/faf4a/aoijs-api.git temp-api-repo
+
+      - name: Fetch PR count
+        id: pr-count
+        run: |
+          pr_count=$(gh pr list --repo faf4a/aoijs-api --state all | wc -l)
+          echo "pr_count=$pr_count" >> $GITHUB_OUTPUT
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Compare functions.json
+        run: |
+          if ! diff -q scripts/functions.json temp-api-repo/src/pages/assets/data/functions.json; then
+            echo "Files are different. Proceeding with update."
+          else
+            echo "No differences found. Skipping PR creation."
+            exit 0
+          fi
+
+      - name: Update functions.json in aoijs-api
+        run: |
+          git config --local user.name "github-actions"
+          git config --local user.email "github-actions@github.com"
+          cp scripts/functions.json temp-api-repo/src/pages/assets/data/functions.json
+          cd temp-api-repo
+          git config --local user.name "github-actions"
+          git config --local user.email "github-actions@github.com"
+          git add src/pages/assets/data/functions.json
+          git commit -m "[workflow] Update functions.json"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create pull request to aoijs-api
+        run: |
+          cd temp-api-repo
+          git remote set-url origin https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/faf4a/aoijs-api.git
+          
+          # Create a branch with unique name
+          branch_name="update-functions-${{ steps.pr-count.outputs.pr_count }}"
+          git checkout -b $branch_name
+          
+          # Force push to the new branch
+          git push -f origin $branch_name
+          
+          # Create PR
+          gh pr create --title "[workflow] Update functions.json" --body "hello, i am a bot! please merge the api changes." --repo faf4a/aoijs-api --head $branch_name --base master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+
+      - name: Notify Discord of PR success
+        if: success()
+        run: |
+          curl -H "Content-Type: application/json" \
+          -d '{
+            "embeds": [
+              {
+                "title": "Forceful Update Completed",
+                "description": "updated api docs, awaiting PR approval",
+                "color": 16711680,
+                "footer": {
+                  "text": "Forceful update done by ${{ github.actor }} ty"
+                },
+                "timestamp": "'$(date -u +"%Y-%m-%dT%H:%M:%SZ")'"
+              }
+            ]
+          }' \
+          ${{ secrets.DISCORD_WORKFLOW }}
