@@ -48,8 +48,15 @@ jobs:
           git config --local user.email "github-actions@github.com"
           git pull
           git add .
-          git commit -m "[workflow] Update documentation"
-          git push origin main
+          if ! git diff-index --quiet HEAD; then
+            git commit -m "[workflow] Update documentation"
+            git push origin main
+            echo "::set-output name=changes_made::true"
+            echo "true"
+          else
+            echo "::set-output name=changes_made::false"
+            echo "false"
+          fi
 
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
