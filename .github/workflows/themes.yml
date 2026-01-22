@@ -15,7 +15,7 @@ jobs:
 
       - name: Fetch themes from API
         run: |
-          curl -s https://discord-themes.com/api/themes -o themes.json
+          curl -s https://themes.equicord.org/api/themes -o themes.json
 
       - name: Commit and push changes
         run: |
